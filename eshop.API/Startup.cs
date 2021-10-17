@@ -1,7 +1,8 @@
-using eshop.API.Security;
+﻿using eshop.API.Security;
 using eshop.Data.Repositories;
 using eshop.Services;
 using eshop.Services.Mapping;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -10,10 +11,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace eshop.API
@@ -40,9 +43,38 @@ namespace eshop.API
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "eshop.API", Version = "v1" });
             });
-            services.AddAuthentication("Basic")
-                    .AddScheme<BasicAuthenticationOption,BasicAuthenticationHandler>("Basic",null);
+            //services.AddAuthentication("Basic")
+            //        .AddScheme<BasicAuthenticationOption,BasicAuthenticationHandler>("Basic",null);
 
+            //JWT Bearer için aşağıdaki kodları kullandık, Basic'i iptal ettik.
+
+            var bearer = Configuration.GetSection("Bearer");
+            var issuer = bearer["Issuer"];
+            var audience = bearer["Audience"];
+            var securityKey = bearer["SecurityKey"];
+
+            //JWT'nin nasıl üretileceğini ve onaylanacağı kurallarını yazdık
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                    .AddJwtBearer(option =>
+                    {
+                        option.TokenValidationParameters = new TokenValidationParameters
+                        {                           
+                            ValidateIssuer = true,
+                            ValidateAudience = true,
+                            ValidateIssuerSigningKey = true,
+                            ValidIssuer = issuer,
+                            ValidAudience = audience,
+                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(securityKey))
+                        };
+                    });
+
+            services.AddCors(option => option.AddPolicy("Allow", policyBuilder =>
+            {
+                policyBuilder.AllowAnyOrigin();           
+                policyBuilder.AllowAnyMethod();
+                policyBuilder.AllowAnyHeader();
+              
+            }));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -60,6 +92,8 @@ namespace eshop.API
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseCors("Allow");
 
             app.UseEndpoints(endpoints =>
             {
