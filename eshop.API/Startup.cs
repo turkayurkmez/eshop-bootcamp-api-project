@@ -1,4 +1,5 @@
 ﻿using eshop.API.Security;
+using eshop.Data.Context;
 using eshop.Data.Repositories;
 using eshop.Services;
 using eshop.Services.Mapping;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -75,6 +77,12 @@ namespace eshop.API
                 policyBuilder.AllowAnyHeader();
               
             }));
+
+
+            var connectionString = Configuration.GetConnectionString("db");
+            services.AddDbContext<EshopDbContext>(option => option.UseSqlServer(connectionString));
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -90,10 +98,11 @@ namespace eshop.API
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors("Allow");
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseCors("Allow");
 
             app.UseEndpoints(endpoints =>
             {
