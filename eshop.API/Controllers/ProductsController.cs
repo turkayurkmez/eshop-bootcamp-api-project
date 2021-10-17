@@ -1,6 +1,8 @@
 ﻿using eshop.Models;
+using eshop.Models.DataTransferObjects.Requests;
 using eshop.Models.DataTransferObjects.Responses;
 using eshop.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -26,5 +28,25 @@ namespace eshop.API.Controllers
             var products = await productService.GetProducts();
             return Ok(products);
         }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetProductId(int id)
+        {
+            ProductDetailedResponse product = await productService.GetProduct(id);
+            return Ok(product);
+        }
+
+        [HttpPost]
+        [Authorize(Roles ="Admin,Editor")]
+        public async Task<IActionResult> AddProduct(AddProductRequest addProductRequest)
+        {
+            if (ModelState.IsValid)
+            {
+                int lastProductId = await productService.AddNewProduct(addProductRequest);
+                return CreatedAtAction(nameof(GetProductId), new { id = lastProductId }, null);
+            }
+            return BadRequest(ModelState);
+        }
+
+
     }
 }

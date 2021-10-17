@@ -1,4 +1,5 @@
-﻿using eshop.Models.DataTransferObjects.Responses;
+﻿using eshop.Models.DataTransferObjects.Requests;
+using eshop.Models.DataTransferObjects.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,5 +11,7 @@ namespace eshop.Services
     public interface IProductService
     {
         Task<IEnumerable<ProductSimpleResponse>> GetProducts();
+        Task<ProductDetailedResponse> GetProduct(int id);
+        Task<int> AddNewProduct(AddProductRequest addProductRequest);
     }
 }
