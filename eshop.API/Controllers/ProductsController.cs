@@ -15,7 +15,7 @@ namespace eshop.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-   
+    [Authorize]
     [EnableCors("Allow")]
     public class ProductsController : ControllerBase
     {
@@ -26,14 +26,14 @@ namespace eshop.API.Controllers
             this.productService = productService;
         }
         [HttpGet]
-    
-        public async  Task<IActionResult> GetProducts()
-        {            
+
+        public async Task<IActionResult> GetProducts()
+        {
             var products = await productService.GetProducts();
             return Ok(products);
         }
         [HttpGet("{id}")]
-      
+        [Authorize(Roles = "Admin,Editor")]
         public async Task<IActionResult> GetProductId(int id)
         {
             ProductDetailedResponse product = await productService.GetProduct(id);
