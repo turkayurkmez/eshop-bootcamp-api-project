@@ -16,13 +16,27 @@ namespace eshop.Data.Repositories
         {
             this.eshopDbContext = eshopDbContext;
         }
-        public Task<int> AddProduct(Product product)
+        public async Task<int> Add(Product product)
         {
-            throw new NotImplementedException();
+            eshopDbContext.Products.Add(product);
+            await eshopDbContext.SaveChangesAsync();
+            return product.Id;
+        }
+
+        public async Task<int> Delete(int id)
+        {
+            var product = await eshopDbContext.Products.SingleOrDefaultAsync(product => product.Id == id);
+            eshopDbContext.Products.Remove(product);
+            var result = await eshopDbContext.SaveChangesAsync();
+            return result;
         }
 
         public async Task<IEnumerable<Product>> GetAllEntities()
         {
+            //1. sayfa : 0 satır atla 5 satır al
+            //2. sayfa: 5 satır atla 5 satır al
+            //3. sayfa: 10 
+            // return await eshopDbContext.Products.Skip(0).Take(5).ToListAsync();
             return await eshopDbContext.Products.ToListAsync();
         }
 
@@ -31,9 +45,29 @@ namespace eshop.Data.Repositories
             return await eshopDbContext.Products.FindAsync(id);
         }
 
-        public Task<IEnumerable<Product>> GetProductsByName()
+        public async Task<IEnumerable<Product>> GetProductsByName(string name)
         {
-            throw new NotImplementedException();
+
+            //var queryable = eshopDbContext.Products.AsQueryable();
+            
+
+            return await eshopDbContext.Products.Where(
+                product => product.Name.ToLower()
+                                       .Contains(name.ToLower()))
+                                       .ToListAsync();
+
+        }
+
+        public async Task<bool> ProductIsExist(int id)
+        {
+            return await eshopDbContext.Products.AnyAsync(product => product.Id == id);
+        }
+
+        public async Task<Product> UpdateEntity(Product entity)
+        {
+            eshopDbContext.Update(entity);
+            await eshopDbContext.SaveChangesAsync();
+            return entity;
         }
     }
 }

@@ -13,5 +13,11 @@ namespace eshop.Services
         Task<IEnumerable<ProductSimpleResponse>> GetProducts();
         Task<ProductDetailedResponse> GetProduct(int id);
         Task<int> AddNewProduct(AddProductRequest addProductRequest);
+
+        Task<IEnumerable<ProductSimpleResponse>> GetProductsByName(string name);
+        Task<bool> ProductIsExist(int id);
+        Task<ProductSimpleResponse> UpdateProduct(UpdateProductRequest request);
+        Task<int> DeleteProduct(int id);
+
     }
 }

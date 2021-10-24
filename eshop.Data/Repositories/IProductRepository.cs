@@ -9,7 +9,8 @@ namespace eshop.Data.Repositories
 {
    public interface IProductRepository : IRepository<Product>
     {
-        Task<IEnumerable<Product>> GetProductsByName();
-        Task<int> AddProduct(Product product);
+        Task<IEnumerable<Product>> GetProductsByName(string name);
+        Task<bool> ProductIsExist(int id);
+
     }
 }

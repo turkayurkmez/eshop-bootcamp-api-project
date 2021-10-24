@@ -17,5 +17,6 @@ namespace eshop.Models.DataTransferObjects.Requests
         public string Description { get; set; }    
         public string ImageUrl { get; set; }
         public List<string> Properties { get; set; }
+        public int CategoryId { get; set; }
     }
 }

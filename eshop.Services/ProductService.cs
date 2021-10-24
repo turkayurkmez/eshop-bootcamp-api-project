@@ -20,6 +20,7 @@ namespace eshop.Services
 
         public ProductService(IProductRepository productRepository, IMapper mapper)
         {
+           
             this.mapper = mapper;
             this.productRepository = productRepository;
         }
@@ -27,9 +28,15 @@ namespace eshop.Services
         public async Task<int> AddNewProduct(AddProductRequest addProductRequest)
         {
             var product = addProductRequest.ConvertToEntity(mapper);
-            int id = await productRepository.AddProduct(product);
+            int id = await productRepository.Add(product);
 
             return id;
+
+        }
+
+        public async Task<int> DeleteProduct(int id)
+        {
+            return await productRepository.Delete(id);
 
         }
 
@@ -50,6 +57,26 @@ namespace eshop.Services
             var products = await productRepository.GetAllEntities();
             var productSimpleResponses = products.ConvertToSimpleResponseListDto(mapper);
             return productSimpleResponses;
+        }
+
+        public async Task<IEnumerable< ProductSimpleResponse>> GetProductsByName(string name)
+        {
+            var products = await productRepository.GetProductsByName(name);
+            var response = products.ConvertToSimpleResponseListDto(mapper);
+            return response;
+        }
+
+        public async Task<bool> ProductIsExist(int id)
+        {
+            return await productRepository.ProductIsExist(id);
+        }
+
+        public async Task<ProductSimpleResponse> UpdateProduct(UpdateProductRequest request)
+        {
+
+            var entity = request.ConvertToEntity(mapper);
+            var product = await productRepository.UpdateEntity(entity);
+            return product.ConvertToEntity(mapper);
         }
     }
 }

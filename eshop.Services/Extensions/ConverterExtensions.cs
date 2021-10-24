@@ -29,6 +29,24 @@ namespace eshop.Services.Extensions
 
         }
 
+        public static ProductSimpleResponse ConvertToSimpleResponseDto(this Product products, IMapper mapper)
+        {
+            //List<ProductSimpleResponse> productSimpleResponses = new List<ProductSimpleResponse>();
+            //products.ToList().ForEach(pro => productSimpleResponses.Add(new ProductSimpleResponse
+            //{
+            //    Description = pro.Description,
+            //    Id = pro.Id,
+            //    Image = pro.ImageUrl,
+            //    Name = pro.Name,
+            //    Price = pro.Price
+            //}));
+            var response = mapper.Map<ProductSimpleResponse>(products);
+            return response;
+
+
+        }
+
+
         public static ProductDetailedResponse ConvertToDetailedProductResponse(this Product product, IMapper mapper)
         {
             var response = mapper.Map<ProductDetailedResponse>(product);
@@ -37,9 +55,18 @@ namespace eshop.Services.Extensions
 
         }
 
-        public static Product ConvertToEntity(this AddProductRequest addProductRequest, IMapper mapper)
+        public static ProductSimpleResponse ConvertToEntity(this Product product, IMapper mapper)
         {
-            return mapper.Map<Product>(addProductRequest);
+            return mapper.Map<ProductSimpleResponse>(product);
+        }
+
+        public static Product ConvertToEntity(this UpdateProductRequest request, IMapper mapper)
+        {
+            return mapper.Map<Product>(request);
+        }
+        public static Product ConvertToEntity(this AddProductRequest request, IMapper mapper)
+        {
+            return mapper.Map<Product>(request);
         }
     }
 }
