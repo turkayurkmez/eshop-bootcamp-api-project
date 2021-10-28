@@ -50,6 +50,11 @@ namespace eshop.Data.Repositories
             return await Task.FromResult(products.Find(x => x.Id == id));
         }
 
+        public Task<IEnumerable<Product>> GetProductsByCategory(int categoryId)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<IEnumerable<Product>> GetProductsByName()
         {
             throw new NotImplementedException();

@@ -37,12 +37,19 @@ namespace eshop.Data.Repositories
             //2. sayfa: 5 satır atla 5 satır al
             //3. sayfa: 10 
             // return await eshopDbContext.Products.Skip(0).Take(5).ToListAsync();
-            return await eshopDbContext.Products.ToListAsync();
+            var result = await eshopDbContext.Products.Include(p=>p.Category).ThenInclude(c=>c.Products).ToListAsync();
+            return result;
         }
 
         public async Task<Product> GetEntityById(int id)
         {
             return await eshopDbContext.Products.FindAsync(id);
+        }
+
+        public async Task<IEnumerable<Product>> GetProductsByCategory(int categoryId)
+        {
+            return await eshopDbContext.Products.Where(product => product.CategoryId == categoryId).ToListAsync();
+
         }
 
         public async Task<IEnumerable<Product>> GetProductsByName(string name)

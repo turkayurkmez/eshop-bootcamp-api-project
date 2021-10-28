@@ -11,6 +11,6 @@ namespace eshop.Data.Repositories
     {
         Task<IEnumerable<Product>> GetProductsByName(string name);
         Task<bool> ProductIsExist(int id);
-
+        Task<IEnumerable<Product>> GetProductsByCategory(int categoryId);
     }
 }

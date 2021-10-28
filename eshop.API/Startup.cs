@@ -15,10 +15,12 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace eshop.API
@@ -36,7 +38,11 @@ namespace eshop.API
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddControllers();
+            services.AddControllers()
+                    .AddNewtonsoftJson(config =>
+                    {
+                        config.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+                    });
 
             var isProduction = Configuration.GetSection("IsProduction").Get<bool>();
             services.AddScoped<IProductService, ProductService>();

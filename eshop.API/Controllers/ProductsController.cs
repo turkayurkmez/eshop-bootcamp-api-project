@@ -30,7 +30,7 @@ namespace eshop.API.Controllers
 
         public async Task<IActionResult> GetProducts()
         {
-            var products = await productService.GetProducts();
+            var products = await productService.GetAllProducts();
             return Ok(products);
         }
         [HttpGet("{id}")]
@@ -47,6 +47,15 @@ namespace eshop.API.Controllers
             var result = await productService.GetProductsByName(name);
             return Ok(result);
         }
+        [HttpGet("FromCategories/{categoryId}")]
+        public async Task<IActionResult> GetProductsByCategoryId([FromRoute]int categoryId)
+        {
+            //YAGNI
+            IEnumerable<ProductSimpleResponse> result = await productService.GetProductsByCategory(categoryId);
+            return Ok(result);
+
+        }
+
 
         [HttpPost]
         //[Authorize(Roles = "Admin,Editor")]

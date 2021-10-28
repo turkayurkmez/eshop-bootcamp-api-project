@@ -40,6 +40,12 @@ namespace eshop.Services
 
         }
 
+        public async Task<IEnumerable<Product>> GetAllProducts()
+        {
+            return await productRepository.GetAllEntities();
+
+        }
+
         public async Task<ProductDetailedResponse> GetProduct(int id)
         {
             Product product = await productRepository.GetEntityById(id);
@@ -57,6 +63,13 @@ namespace eshop.Services
             var products = await productRepository.GetAllEntities();
             var productSimpleResponses = products.ConvertToSimpleResponseListDto(mapper);
             return productSimpleResponses;
+        }
+
+        public async Task<IEnumerable<ProductSimpleResponse>> GetProductsByCategory(int categoryId)
+        {
+            IEnumerable<Product> products = await productRepository.GetProductsByCategory(categoryId);
+            var response = products.ConvertToSimpleResponseListDto(mapper);
+            return response;
         }
 
         public async Task<IEnumerable< ProductSimpleResponse>> GetProductsByName(string name)
